@@ -1,0 +1,1204 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Tasker</title>
+  <base href="/">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">
+  <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.js"></script>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<style>
+      body {
+        font-family: Arial, sans-serif;
+      }
+      .section {
+        margin: 20px;
+      }
+      button {
+        padding: 5px 16px;
+        border-radius: 4px;
+      }      
+      
+      button#addTask { background-color: #98fb98; }
+      
+      button#addGroup { background-color: #add8e6; }      
+      button#editGroup { background-color: yellow; }
+      button#deleteGroup { background-color: pink; }
+      button#showGroup { background-color: rgb(255, 205, 192); }
+
+      button#createUser { background-color: #4fcbf5; }      
+      button#deleteUser { background-color: rgb(245, 245, 73); }
+      button#link { background-color: rgb(252, 92, 118); }
+      button#assignUser { background-color: rgb(255, 110, 74); }
+      button#releaseUser { background-color: #04759b; color: white;}   
+      button#refreshUsrPrj { background-color: #973792; color: white;}  
+      button#createProject { background-color: rgb(146, 146, 5); }
+      button#deleteProject { background-color: rgb(148, 56, 72); color: white;}
+      button#createShTask { background-color: rgb(119, 63, 49); color: white;}
+      button#deleteShTask { background-color: rgb(185, 38, 141); color: white;}
+
+
+      .colorBox {
+        float: left;
+        width: 13px;
+        height: 13px;
+        margin: 5px;
+        border: 1px solid rgba(0, 0, 0, .2);
+      }
+
+      .overdueBox {
+        float: left;
+        background-color: rgb(255, 153, 0);
+        color: white;
+        width: 130px;
+        padding: 7px;
+        text-align: center;
+        border-radius: 3px;
+        font-weight: bold;
+        font-size: large;
+      }
+
+      .todayBox {
+        float: left;
+        background-color: red;
+        color: white;
+        width: 130px;
+        padding: 7px;
+        text-align: center;
+        border-radius: 3px;
+        font-weight: bold;
+        font-size: large;
+      }
+
+      .dueBox {
+        float: left;
+        background-color: green;
+        color: white;
+        width: 130px;
+        padding: 7px;
+        text-align: center;
+        border-radius: 3px;
+        font-weight: bold;
+        font-size: large;
+      }
+    </style>
+</head>
+<body>
+<!-- PAGE TITLE -->
+<div style="text-align:center">
+  <h1>
+    Welcome to Task Creator!
+  </h1>
+  <h4>
+</div>
+<hr/>
+<!-- GROUP SECTION -->
+<div class="section">
+    <h2>Group List</h2>
+    <table data-order='[[ 1, "asc" ]]' class="display" id="groupTable" style="width:50%"></table>
+
+    <div class="section">
+      Enter New Group: <input type="text" id="addgroupName" placeholder="Enter New Group" />
+      <input type="color" id="addgroupColor" name="favcolor" value="#F0F0F0"> 
+      <button id="addGroup" >Add Group</button>
+      <span id="addGroupResult"></span>      
+    </div>
+
+    <div class="section">
+      Edit Group:     <select id="editgroupNamechoice"></select>
+      <input type="text" id="editgroupName" value="Edit Group" /> 
+      <input type="color" id="editgroupColor" name="favcolor" value="#F0F0F0">
+      <button id="editGroup" >Edit Group</button>
+      <span id="editGroupResult"></span>      
+    </div>
+
+    <div class="section">
+      Delete Group: <input type="text" id="groupNameDel" placeholder="Delete Group" /> 
+      <button id="deleteGroup" >Delete Group</button>
+      <span id="deleteGroupResult"></span>      
+    </div>
+</div>
+
+<hr/>
+<!-- TASK SECTION -->
+<div class="section">
+    <h2>Create a Task</h2>
+    Enter Task: <input type="text" id="taskName" placeholder="Enter Task" /> 
+    Enter Date: <input type="date" id="date" placeholder="Enter Date" />
+    Enter Time: <input type="time" id="time" placeholder="Enter Time" />
+    Assign Group: <select id="newTaskgroupNamechoice"></select> 
+    <button id="addTask">Add Task</button>
+      <span id="addTaskResult"></span>
+</div>
+
+<hr/>
+
+<div class="section">
+    <h2>Task List</h2>
+    <table  data-order='[[ 1, "asc" ]]' id="taskTable" class="display" style="width:80%"></table>
+</div>
+
+<hr/>
+<!-- SHARED TASK SECTION -->
+<div class="section">
+  <h2>Shared Tasks Dashboard</h2>
+
+    <h2>Users Sharing Projects</h2>
+    Create User: <input type="text" id="createUserIP" placeholder="Create User" />
+    <button id="createUser">Create User</button>
+    Delete User: <select class="listUserchoice" id="choiceUser"></select> 
+    <button id="deleteUser"> Delete User</button><span id="userCDResult"></span>
+    <table  data-order='[[ 1, "asc" ]]' id="userTable" class="display" style="width:100%"></table>
+  </div>
+  <hr/>
+
+  <div class="section">
+      <h2>Users and their shared Projects</h2>
+      
+      Assign User to Project - 
+      <select class="listUserchoice" id="choiceAssignUser"></select>
+      <select class="listProjectchoice" id="choiceAssignProject"></select>  
+      <button id="assignUser">Assign</button>
+      
+      Release User from Project -
+      <button id="releaseUser">Release</button><span id="userModResult"></span>
+      <table  data-order='[[ 1, "asc" ]]' id="userProjectTable" class="display DataTable" style="width:100%" role="grid"></table>
+  </div>
+
+  <hr/>
+
+  <div class="section">
+      <h2>Projects Shared</h2>
+      Create Project: <input type="text" id="createProjectIP" placeholder="Create Project" />
+      <button id="createProject">Create Project</button>
+      Delete Project: <select class="listProjectchoice" id="choiceDeleteProject"></select> 
+      <button id="deleteProject">Delete Project</button><span id="ShrdProjectResult"></span>
+      <table  data-order='[[ 1, "asc" ]]' id="projectTable" class="display" style="width:100%"></table>
+  </div>
+</div>
+<hr/>
+
+<div class="section">
+    <h2>Create a Shared Task</h2>
+    Enter Task: <input type="text" id="sharedtaskName" placeholder="Enter Task" /> 
+    Enter Date: <input type="date" id="sharedtaskdate" placeholder="Enter Date" />
+    Enter Time: <input type="time" id="sharedtasktime" placeholder="Enter Time" />
+    Assign Project: <select class="listProjectchoice" id="choiceAssignProjectTask"></select> 
+    <button id="createShTask">Add Shared Task</button> 
+    <button id="deleteShTask">Delete Shared Task</button><span id="SharedTaskResult"></span>
+      <table  data-order='[[ 1, "asc" ]]' id="sharedtaskTable" class="display" style="width:100%"></table>
+</div>
+
+<hr/>
+
+<script>
+  //wait for dom to load
+  $(document).ready(function(){
+    console.log("doc is ready");
+  });
+   
+  /* 
+  Formatting function for row detail
+  */
+  function format ( d ) {
+      // `d` is the original data object for the row
+      return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
+          '<tr>'+
+              '<td>Task Name:</td>'+
+              '<td><input type="text" id="taskNameEdit" value="'+d.taskName+'" /></td>'+
+
+              '<td>Task Date:</td>'+
+              '<td><input type="date" id="taskDateEdit" value="'+d.date+'" /></td>'+
+
+              '<td>Task Time:</td>'+
+              '<td><input type="time" id="taskTimeEdit" value="'+d.time+'" /></td>'+
+
+              '<td>Task Group:</td>'+
+              '<td><p style="font-size:24px;color:#' + d.groupColor +'" class="fa fa-square"></p></td>'+             
+          '</tr>'+
+      '</table>';
+  }
+
+  //wait for window to load
+  $( window ).on( "load", function() {
+    console.log( "window loaded" );
+
+    /*
+    construct group table  
+    */
+    $('#groupTable').DataTable({
+      paging: false,
+      scrollY: 300,
+      ordering : false,
+      "columnDefs": [ 
+                      { 
+                        "visible": false,  "targets": [ 0 ]
+                      },
+                      {
+                        "title": "Group color", 
+                        "render": function ( data, type, row ) {
+                          return '<div class="colorBox" style="background: #' + data +';"></div>';
+                        },
+                        "targets": 3
+                      },
+                      { 
+                        "title": "Group name", 
+                        "targets": 1 
+                      },
+                      { 
+                        "title": "Number of Tasks", 
+                        "targets": 2 
+                      }
+                    ],
+      ajax: {
+        url: '/api/getgroups',
+        dataSrc: ''
+    },
+    //column data
+    columns: [  {data: "id"}, 
+                {data: "groupName"},
+                {data: "tasksPerGroup"},
+                {data: "groupColor"} ]
+    });
+
+    /*
+    group drop down menu  
+    */
+    function groupDropDown() {
+      var $dropdown = $('#editgroupNamechoice'); //<select> id   
+      var groupTemplate = "<option value=\"{{id}}\">{{groupName}}</option>"; //<option> template
+
+      function addGroupList(group){
+        $dropdown.append(Mustache.render(groupTemplate, group));
+      }
+      //get group data
+      $.ajax({
+        type:'GET',
+        url: '/api/getgroups',
+        success:function(data){
+          //add default select
+          data.unshift({"id": null, "groupName":"Please Select"});
+          $.each(data, function(i, group){
+          addGroupList(group);});
+          //select event
+          $("#editgroupNamechoice").change(function() {
+            
+            var $secondChoice = $("#editgroupName"); //<input> group name
+            var $colorChoice = $("#editgroupColor"); //<input> group color
+
+                //check for <option> value true
+                if($dropdown.val()){
+                  var $optVal = $dropdown.val(); 
+                  var $clrVal = "F0F0F0";                 
+
+                  //iterate group table, convert id to name
+                  for(i = 0; i <= data.length; i++){
+                    if(data[i].id == $optVal){
+                      $optVal = data[i].groupName;
+                      $clrVal = data[i].groupColor;
+                      break;
+                    }
+                  }
+                  //show selection
+                  $secondChoice.val($optVal);
+                  $colorChoice.val('#'+ $clrVal);
+                }else{
+                  //default selection
+                  $secondChoice.val("Edit Group");
+                  $colorChoice.val('#F0F0F0');
+                }         
+              });
+            
+        },
+        error: function(){
+          alert('error loading group Name');
+        }
+      }); // get drop down  ajax      
+    }; // group drop down menu function
+    $(function(){groupDropDown();}); // call above function on doc load
+
+    //clear selection list function
+    function cleargroupDropDown(){
+      var select = document.getElementById("editgroupNamechoice");
+      select.options.length = 0;
+    }
+
+    /*
+    group add button  
+    */
+    $('#addGroup').on('click',function(){  
+      var $groupName = null; //new group name input
+
+      //check if user input group name true
+      if($('#addgroupName').val()){
+        var $groupColor = $('#addgroupColor').val(); //new group color
+        $groupName = $('#addgroupName').val(); //new group name
+
+        var group = {groupName : $groupName, groupColor : $groupColor}; //create data object
+          $.ajax({
+            method:'POST',
+            url: '/api/addgroup',
+            data: group,
+            success:function(newGroup){
+              if(newGroup.affectedRows){ //no db errors
+                $('#addGroupResult').hide().html("new group created"); // display message
+                $('#addGroupResult').fadeIn(50).delay(1000).fadeOut(300);
+                refreshupperDropDown();
+
+                $('#addgroupName').val(""); //clear user entry
+                $('#addgroupColor').val("#F0F0F0");
+                
+                var table = $('#groupTable').DataTable(); //refresh group table
+                table.ajax.reload();
+              }else{
+                $('#addGroupResult').hide().html(newGroup.message); //error message from DB result
+                $('#addGroupResult').fadeIn(50).delay(1000).fadeOut(300);
+              }
+            },
+            error: function(){
+                alert('error inserting group'); //error message
+            }
+        }); //new group ajax
+      }else{        
+        $('#addGroupResult').hide().html("write something !!"); //display error message no user input
+        $('#addGroupResult').fadeIn(50).delay(1000).fadeOut(300);
+      }
+    }); //new group function
+
+    /*
+    group edit button  
+    */
+    $("#editGroup").on('click',function(){  
+      var $groupNameEd = null; //new group name
+      var $groupColorEd = null; //new group color
+      var $dropdownVal = null; //group name selected
+ 
+      //check if group is selected true
+       if($('#editgroupNamechoice').val() && $('#editgroupName').val()){
+          $groupNameEd = $('#editgroupName').val(); //clean user input
+          $groupColorEd = $('#editgroupColor').val();
+          $dropdownVal =  $('#editgroupNamechoice').val();
+          
+          //send edited group data
+          $.ajax({
+          method:'POST',
+          url: '/api/editgroup/',
+          data: {"id": $dropdownVal, "groupName" : $groupNameEd, "groupColor" : $groupColorEd},
+          success:function(editOneGroup){
+            if(editOneGroup.affectedRows){ //no db errors
+              $('#editGroupResult').hide().html("Change Effected"); //message result
+              $('#editGroupResult').fadeIn(50).delay(1000).fadeOut(300);
+
+              refreshupperDropDown();
+
+              $('#editgroupName').val(""); //clear input fields
+              $('#editgroupColor').val("#F0F0F0");
+
+              var table = $('#groupTable').DataTable(); //refresh group table
+              table.ajax.reload();
+            }else{
+                $('#editGroupResult').hide().html(editOneGroup.message); //error message from DB result
+                $('#editGroupResult').fadeIn(50).delay(1000).fadeOut(300);
+              }
+          },
+          error: function(){
+            alert('error updating group');
+          }
+        }); //edited group ajax
+      }else{
+        //empty edit selection
+        $('#editGroupResult').hide().html("Select a group!");
+        $('#editGroupResult').fadeIn(500).delay(1000).fadeOut(300);
+      }      
+    }); //group edit button  
+
+    /*
+    group delete button  
+    */
+    $("#deleteGroup").on('click',function(){  
+      var $groupNameDel = null; //new group name
+ 
+      //check if group is selected true
+       if($('#groupNameDel').val()){
+          $groupNameDel = escape($('#groupNameDel').val()); //clean user input
+
+          //send edited group data
+          $.ajax({
+          method:'DELETE',
+          url: '/api/deletegroup/' + $groupNameDel,
+          data:'',
+          success:function(delOneGroup){
+            if(delOneGroup.affectedRows){ //no db errors
+              $('#deleteGroupResult').hide().html("Change Effected"); //message result
+              $('#deleteGroupResult').fadeIn(50).delay(1000).fadeOut(300);
+              refreshupperDropDown();
+              
+              var table = $('#groupTable').DataTable(); //refresh group table
+              table.ajax.reload();
+
+              $('#groupNameDel').val(""); //clear input fields
+            }else{
+                $('#deleteGroupResult').hide().html('error deleting group'); //error message from DB result
+                $('#deleteGroupResult').fadeIn(50).delay(1000).fadeOut(300);
+              }
+          },
+          error: function(){
+            alert('error deleteing group');
+          }
+        }); //edited group ajax
+      }else{
+        //empty edit selection
+        $('#deleteGroupResult').hide().html("Type a group!");
+        $('#deleteGroupResult').fadeIn(500).delay(1000).fadeOut(300);
+      }      
+    }); //group delete button  
+
+    /*
+    construct task table  
+    */
+    var table = $('#taskTable').DataTable({
+      paging: false,
+      scrollY: 300,
+      ordering : false,
+      orderFixed: [1, 'asc'],
+      "columnDefs": [
+                      {
+                        "render": function ( data, type, row ) {
+                          return '<div class="colorBox" style="background: #' + data +';"></div>';
+                        },
+                        "targets": 1
+                      }
+                    ],
+
+      ajax: {
+        url: '/api/gettasks',
+        dataSrc: ''
+    },
+      //column data 
+      columns: [  
+                  {"className": 'details-control', data: "taskName"},
+                  {data: "groupColor"},
+                  { "className": 'timer-control',
+                    "targets": 2,
+                    "data": null,
+                    "defaultContent": "<div id=\"checkDateDiff\" class=\"\">Today</div>"
+                  } ,
+                  { "className": 'edit-control',
+                    "targets": 3,
+                    "data": null,
+                    "defaultContent": "<button id=\"editTaskBtn\" type=\"button\" class=\"btn btn-info btn-sm\"><span class=\"glyphicon glyphicon-pencil\"></span>  Edit</button>"
+                  } ,
+                  { "className": 'delete-control',
+                    "targets": 3,
+                    "data": null,
+                    "defaultContent": "<button id=\"deleteTaskBtn\" type=\"button\" class=\"btn btn-primary btn-sm\"><span class=\"glyphicon glyphicon-off\"></span>  Done</button>"
+                  } 
+                ], 
+                
+        "initComplete": function(settings, json) {
+          console.log( 'DataTables has finished its initialisation.' );
+          
+          $( ".timer-control #checkDateDiff" ).each(function(index) { //loop all task rows
+            //console.log(index);
+            celldata=table.cell({ row: index, column: 2 }).data(); // get row data
+            //console.log(celldata);
+            if(celldata.datediff == 0){ //change class
+              $( this ).html("Today").toggleClass("todayBox");
+            }else if(celldata.datediff > 0){
+              $( this ).html("Overdue").toggleClass("overdueBox");
+            }else{
+              $( this ).html("T " + celldata.datediff + " days").toggleClass("dueBox");
+            }            
+            });
+        }                 
+    });
+
+    /*
+    Add event listener for opening and closing details - task edit menu
+    */
+    $('#taskTable tbody').on('click', 'td.details-control', function () {
+
+        var tr = $(this).closest('tr');
+        var row = table.row( tr );
+ 
+        if ( row.child.isShown() ) {
+            // This row is already open - close it
+            row.child.hide();
+            tr.removeClass('shown');
+        }
+        else {
+            // Open this row
+            row.child( format(row.data()) ).show();
+            tr.addClass('shown');
+        }
+    });
+
+    /*
+    task drop down
+    */
+    function taskDropDown() {
+      var $dropdown = $('#newTaskgroupNamechoice'); //<select> id      
+      var groupTemplate = "<option value=\"{{id}}\">{{groupName}}</option>"; //<option> template
+
+      function taskGroupList(group){
+        $dropdown.append(Mustache.render(groupTemplate, group));
+      }
+      //get group data
+      $.ajax({
+        type:'GET',
+        url: '/api/getgroups',
+        success:function(data){
+          //add default select
+         data.unshift({"id": null, "groupName":"Please Select"});
+         $.each(data, function(i, group){taskGroupList(group);});        
+        },
+          error: function(){
+          alert('error loading group Name');
+        }
+      }); // get drop down  ajax      
+    }; // group drop down menu function
+    
+    $(function(){taskDropDown();}); // call above function on doc load
+
+    //clear selection list function
+    function cleartaskDropDown(){
+      var select = document.getElementById("newTaskgroupNamechoice");
+      select.options.length = 0;
+    }
+
+    /*
+    task add button  
+    */
+    $('#addTask').on('click',function(){  
+      var $taskName = $('#taskName').val(); //task name input
+      var $date_time = $('#date').val().concat(' ' + $('#time').val()); //task date input
+      var $groupID  = $('#newTaskgroupNamechoice').val(); //task group input
+
+  
+      var task = {taskName : $taskName, groupID : $groupID, date_time : $date_time}; //task object
+      if($taskName.trim() && $groupID.trim() && $date_time.trim()){
+        $.ajax({
+          method:'POST',
+          url: '/api/addtask',
+          data: task,
+          success:function(newTask){
+            if(newTask.affectedRows){
+              $('#addTaskResult').hide().html(newTask.message);
+              $('#addTaskResult').fadeIn(500).delay(1000).fadeOut(300);
+              var table = $('#taskTable').DataTable(); table.ajax.reload(); //refresh task table
+              var table = $('#groupTable').DataTable(); table.ajax.reload(); //refresh group table
+            }else{
+              $('#addTaskResult').hide().html(newTask.message);
+              $('#addTaskResult').fadeIn(500).delay(1000).fadeOut(300);
+            }
+          },
+          error: function(){
+            alert('error inserting task');
+          }
+        }); //new task ajax
+      }else{
+        $('#addTaskResult').hide().html("Fill in all fields!");
+        $('#addTaskResult').fadeIn(500).delay(1000).fadeOut(300);
+      }
+
+    }); //new task function
+
+    /*
+    task delete button
+    */
+    $('#taskTable tbody').on('click', 'td.delete-control', function () {
+
+      var celldata = table.cell( this ).data();
+
+        //send edited group data
+        $.ajax({
+        method:'DELETE',
+        url: '/api/deletetask/' + celldata.id,
+        data:'',
+        success:function(delOneTask){
+                      
+          var table = $('#taskTable').DataTable(); //refresh group table
+          table.ajax.reload();          
+        },
+          error: function(){
+            alert('error deleteing group');
+        }
+      }); //edited group ajax     
+    });
+
+    /*
+    task edit button
+    */
+    $('#taskTable tbody').on('click', 'td.edit-control', function () {
+    
+      var tr = $(this).closest('tr');
+      var row = table.row( tr );
+      var celldata = table.cell( this ).data();
+
+      var $taskName = $('#taskNameEdit').val(); //task name input
+      var $date_time = $('#taskDateEdit').val().concat(' ' + $('#taskTimeEdit').val()); //task date input
+        
+      var editdata = {id : celldata.id, taskName : $taskName, date_time : $date_time}; //task object
+  
+          if ( row.child.isShown() ) {
+            //send edited group data
+            $.ajax({
+            method:'POST',
+            url: '/api/updatetask/',
+            data: editdata,
+            success:function(editOneTask){
+                          
+              var table = $('#taskTable').DataTable(); //refresh group table
+              table.ajax.reload();          
+            },
+              error: function(){
+                alert('error editing group');
+            }
+          }); //edited group ajax  
+          }  
+    });
+
+    function refreshupperDropDown(){
+            cleargroupDropDown(); //clear selection list
+            groupDropDown();  //re-populate selection list
+
+            cleartaskDropDown(); //clear selection list
+            taskDropDown();  //re-populate selection list
+    };
+
+    /*
+    Get User List Drop Down
+    */ 
+    function userDropDown() {
+      var $dropdown = $('.listUserchoice'); //<select> id      
+      var groupTemplate = "<option value=\"{{id}}\">{{user_name}}</option>"; //<option> template
+
+      function addGroupList(group){
+        $dropdown.append(Mustache.render(groupTemplate, group));
+      }
+      //get group data
+      $.ajax({
+        type:'GET',
+        url: '/api/getshrdusrs',
+        success:function(data){
+          //add default select
+          data.unshift({"id": null, "user_name":"Please Select"});
+         $.each(data, function(i, group){
+          addGroupList(group);});            
+        },
+        error: function(){
+          alert('error loading user_name');
+        }
+      }); // get drop down  ajax      
+    }; // user drop down menu function
+
+    $(function(){userDropDown();}); // call above function on doc load
+
+    //clear selection list function
+    function clearuserDropDown(){
+      var select = document.getElementsByClassName("listUserchoice");
+      [].forEach.call(select, function(el, i) { 
+        el.options.length = 0;
+      });
+      userDropDown();
+    }
+
+    /*
+    construct shared tasks table  
+    */
+    $('#userTable').DataTable({
+      paging: false,
+      scrollY: 300,
+      ordering : false,
+      "columnDefs": [
+        {
+          "visible": false,  
+          "targets": [ 0 ] 
+        },
+        { 
+              "title": "User", 
+              "targets": 1 
+        }
+      ],
+      ajax: {
+        url: '/api/getshrdusrs',
+        dataSrc: ''
+    },
+    //column data
+    columns: [  {data: "id"}, 
+                {data: "user_name"}]
+    });
+
+    /*
+    construct shared projects table  
+    */
+    $('#projectTable').DataTable({
+      paging: false,
+      scrollY: 300,
+      ordering : false,
+      "columnDefs": [
+        {
+          "visible": false,  
+          "targets": [ 0 ] 
+        },
+        { 
+              "title": "Project", 
+              "targets": 1 
+        }
+      ],
+      ajax: {
+        url: '/api/getshrdprj',
+        dataSrc: ''
+    },
+    //column data
+    columns: [  {data: "id"}, 
+                {data: "sharedprojectname"}]
+    });
+
+    /*
+    construct users and their shared projects table  
+    */
+    $('#userProjectTable').DataTable({
+      "columnDefs": [
+            {
+                "targets": [ 0 ],
+                "visible": false
+            },
+            { 
+              "title": "User Name", 
+              "targets": 1 
+            },
+            { 
+              "title": "Project", 
+              "targets": 2 
+            }
+        ],
+      paging: false,
+      scrollY: 300,
+      ordering : false,
+      ajax: {
+        url: '/api/getshrdusrsproj',
+        dataSrc: ''
+    },
+    //column data
+    columns: [  {data: "id"},
+                {data: "user_name"},
+                {data: "sharedprojectname"}]
+    });
+
+    /*
+    construct users and their shared projects table  
+    */
+    $('#sharedtaskTable').DataTable({
+      paging: false,
+      scrollY: 300,
+      ordering : false,
+      "columnDefs": [
+        {
+          "visible": false,  
+          "targets": [ 0 ] 
+        },
+        { 
+              "title": "Project", 
+              "targets": 1 
+        },
+        { 
+              "title": "Task", 
+              "targets": 2 
+        },
+        { 
+              "title": "Date", 
+              "targets": 3 
+        },
+        { 
+              "title": "Time", 
+              "targets": 4 
+        }
+      ],
+      ajax: {
+        url: '/api/getshrdprojtasks',
+        dataSrc: ''
+    },
+    //column data
+    columns: [  {data: "id"}, 
+                {data: "sharedprojectname"},
+                {data: "sharedtaskname"},
+                {data: "sharedtaskdate"},
+                {data: "sharedtasktime"}]
+    });
+
+    /*
+    Create User 
+    */
+    $('#createUser').on('click',function(){  
+      var $userName = escape($('#createUserIP').val()); //user name input
+  
+      if($userName.trim()){
+          //console.log(task);
+          $.ajax({
+            method:'POST',
+            url: '/api/addshrduser',
+            data: {user_name : $userName},
+            success:function(newUser){
+              if(newUser.res.affectedRows){
+                $('#userCDResult').hide().html(newUser.message);
+                $('#userCDResult').fadeIn(500).delay(1000).fadeOut(300);
+                clearuserDropDown();
+                $('#createUserIP').val("");
+                //refresh users table
+                var table = $('#userTable').DataTable(); table.ajax.reload();
+              }else{
+                $('#userCDResult').hide().html(newUser.message);
+                $('#userCDResult').fadeIn(500).delay(1000).fadeOut(300);
+              }
+            },
+            error: function(){
+              alert('error inserting user');
+            }
+          }); //new user ajax
+        }else{
+              $('#userCDResult').hide().html("Type in a user name!");
+              $('#userCDResult').fadeIn(500).delay(1000).fadeOut(300);
+        }
+    }); //new user function
+    
+    /*
+    Delete User 
+    */
+    $("#deleteUser").on('click',function(){  
+      var $userNameDel = null; //new user name
+      $userNameDel = $('#choiceUser').val(); 
+      //check if user is selected true
+       if($userNameDel){
+          //send edited user data
+          $.ajax({
+          method:'DELETE',
+          url: '/api/deleteshrduser/' + $userNameDel,
+          data:'',
+          success:function(delOneUser){
+            if(delOneUser.affectedRows){
+              $('#userCDResult').hide().html("Change Effected"); //message result
+              $('#userCDResult').fadeIn(50).delay(1000).fadeOut(300);
+              clearuserDropDown();
+
+              var table = $('#userTable').DataTable(); //refresh user table
+              table.ajax.reload();
+            }else{
+              $('#userCDResult').hide().html(delOneUser.message); //message result
+              $('#userCDResult').fadeIn(50).delay(1000).fadeOut(300);
+            }
+
+          },
+            error: function(){
+              alert('error deleteing user');
+          }
+        }); //delete user ajax
+      }else{
+        //empty user selection
+        $('#userCDResult').hide().html("Select a User!");
+        $('#userCDResult').fadeIn(500).delay(1000).fadeOut(300);
+      }      
+    }); //user delete button  
+
+    /*
+    Get Project List Drop Down
+    */ 
+    function projectDropDown() {
+      var $dropdown = $('.listProjectchoice'); //<select> id      
+      var groupTemplate = "<option value=\"{{id}}\">{{sharedprojectname}}</option>"; //<option> template
+
+      function addGroupList(group){
+        $dropdown.append(Mustache.render(groupTemplate, group));
+      }
+      //get projects data
+      $.ajax({
+        type:'GET',
+        url: '/api/getshrdprj',
+        success:function(data){
+          //add default select
+          data.unshift({"id": null, "sharedprojectname":"Please Select"});
+         $.each(data, function(i, group){
+          addGroupList(group);});            
+        },
+        error: function(){
+          alert('error loading sharedprojectname');
+        }
+      }); // get drop down  ajax      
+    }; // project drop down menu function
+
+    $(function(){projectDropDown();}); // call above function on doc load
+
+    //clear selection list function
+    function clearprojectDropDown(){
+      var select = document.getElementsByClassName("listProjectchoice");
+      [].forEach.call(select, function(el, i) { 
+        el.options.length = 0;
+      });
+      projectDropDown();
+    }
+
+    /*
+    Assign User 
+    */
+    $("#assignUser").on('click',function(){  
+      var $userName = null; //user name
+      var $projectName = null; //project name
+ 
+      //check if name is selected true
+       if($('#choiceAssignUser').val() && $('#choiceAssignProject').val()){
+        //check if name is selected true
+         $userName = $('#choiceAssignUser').val(); 
+        //check if name is selected true
+         $projectName = $('#choiceAssignProject').val(); 
+
+          //send assignment
+          $.ajax({
+          method:'POST',
+          url: '/api/assignshrdlink/',
+          data: {usernameID : $userName, projectID : $projectName},
+          success:function(newAssign){
+            $('#userModResult').hide().html("Change Effected"); //message result
+            $('#userModResult').fadeIn(50).delay(1000).fadeOut(300);
+
+            var table = $('#userProjectTable').DataTable(); //refresh group table
+            table.ajax.reload();
+
+            $('#choiceAssignUser').val(null);
+            $('#choiceAssignProject').val(null);
+
+          },
+            error: function(){
+              alert('error assigning user to project');
+          }
+        }); //delete user ajax
+      }else{
+        //empty user selection
+        $('#userModResult').hide().html("Select a User and a Project!");
+        $('#userModResult').fadeIn(500).delay(1000).fadeOut(300);
+      }      
+    }); //user assign project button  
+
+    /*
+    Release User  
+    */ 
+    $('#userProjectTable tbody').on('click', 'tr', function () {
+        
+        var table = $('#userProjectTable').DataTable();
+        var data = table.row( this ).data();
+        console.log(data);
+
+        if ( $(this).hasClass('selected') ) {
+            $(this).removeClass('selected');
+        }
+        else {
+            table.$('tr.selected').removeClass('selected');
+            $(this).addClass('selected');
+        }
+    });
+
+    $('#releaseUser').click( function () {
+      var table = $('#userProjectTable').DataTable();
+      var row = table.row('.selected').data();
+      if(row !== undefined){
+          //send assignment
+          $.ajax({
+          method:'DELETE',
+          url: '/api/deleteshrdlink/' + row.id,
+          data: '',
+          success:function(linkRelease){
+            $('#userModResult').hide().html("Change Effected"); //message result
+            $('#userModResult').fadeIn(50).delay(1000).fadeOut(300);
+
+            var table = $('#userProjectTable').DataTable(); //refresh group table
+            table.ajax.reload();
+
+          },
+            error: function(){
+              alert('error releaseing user from project');
+          }
+        }); //delete user ajax
+      }else{
+        //empty user selection
+        $('#userModResult').hide().html("Select a row to release link!");
+        $('#userModResult').fadeIn(500).delay(1000).fadeOut(300);
+      }
+
+    }); //user release project button  
+
+    /*
+    Create Project  
+    */  
+    $('#createProject').on('click',function(){  
+      var $projectName = $('#createProjectIP').val(); //user name input
+  
+      if($projectName.trim()){
+          //console.log(task);
+          $.ajax({
+            method:'POST',
+            url: '/api/addshrdprj',
+            data: {sharedprojectname : $projectName},
+            success:function(newProject){
+              if(newProject.affectedRows){
+                $('#ShrdProjectResult').hide().html(newProject.message);
+                $('#ShrdProjectResult').fadeIn(500).delay(1000).fadeOut(300);
+                clearprojectDropDown();
+                $('#createProjectIP').val("");
+                //refresh users table
+                var table = $('#projectTable').DataTable(); table.ajax.reload();
+              }else{
+                $('#ShrdProjectResult').hide().html(newProject.message);
+                $('#ShrdProjectResult').fadeIn(500).delay(1000).fadeOut(300);
+              }
+            },
+            error: function(){
+              alert('error inserting project');
+            }
+          }); //new user ajax
+        }else{
+              $('#ShrdProjectResult').hide().html("Type in a project name!");
+              $('#ShrdProjectResult').fadeIn(500).delay(1000).fadeOut(300);
+        }
+    }); //new user function
+    
+    /*
+    Delete Project  
+    */  
+    $("#deleteProject").on('click',function(){  
+      var $projectNameDel = null; //new project name
+      $projectNameDel = $('#choiceDeleteProject').val(); 
+      //check if project is selected true
+       if($projectNameDel){
+          //send edited project data
+          $.ajax({
+          method:'DELETE',
+          url: '/api/deleteshrdproject/' + $projectNameDel,
+          data:'',
+          success:function(delOneProject){
+            if(delOneProject.affectedRows){
+              $('#ShrdProjectResult').hide().html("Change Effected"); //message result
+              $('#ShrdProjectResult').fadeIn(50).delay(1000).fadeOut(300);
+              clearprojectDropDown();
+
+              var table = $('#projectTable').DataTable(); //refresh user table
+              table.ajax.reload();
+            }else{
+              $('#ShrdProjectResult').hide().html(delOneProject.message); //message result
+              $('#ShrdProjectResult').fadeIn(50).delay(1000).fadeOut(300);
+             
+            }
+
+          },
+            error: function(){
+              alert('error deleteing project');
+          }
+        }); //delete user ajax
+      }else{
+        //empty user selection
+        $('#ShrdProjectResult').hide().html("Select a Project!");
+        $('#ShrdProjectResult').fadeIn(500).delay(1000).fadeOut(300);
+      }      
+    }); //user delete button  
+
+    /*
+    Add Shared Task 
+    */     
+    $('#createShTask').on('click',function(){  
+      var $taskName = $('#sharedtaskName').val(); //task name input
+      var $date = $('#sharedtaskdate').val(); //task date input
+      var $time = $('#sharedtasktime').val(); //task time input
+      var $projectID  = $('#choiceAssignProjectTask').val(); //task group input
+
+  
+      var task = {sharedtaskName : $taskName, projectID : $projectID, sharedtaskdate : $date, sharedtasktime : $time}; //task object
+      //console.log(task);
+      if($taskName.trim() && $projectID.trim()){
+        $.ajax({
+        method:'POST',
+        url: '/api/addsharedtask',
+        data: task,
+        success:function(newTask){
+          $('#SharedTaskResult').hide().html(newTask);
+          $('#SharedTaskResult').fadeIn(500).delay(1000).fadeOut(300);
+          var table = $('#sharedtaskTable').DataTable(); table.ajax.reload(); //refresh task table    
+          
+          $('#sharedtaskName').val("");
+          $('#sharedtaskdate').val("");
+          $('#sharedtasktime').val("");
+          $('#choiceAssignProjectTask').val(null);
+        },
+          error: function(){
+            alert('error inserting task');
+        }
+      }); //new task ajax
+      }else{
+        $('#SharedTaskResult').hide().html('All fields must have info!!');
+          $('#SharedTaskResult').fadeIn(500).delay(1000).fadeOut(300);
+      }
+
+    }); //new task function
+
+    /*
+    Delete Task Select
+    */ 
+    $('#sharedtaskTable tbody').on('click', 'tr', function () {
+        
+        var table = $('#sharedtaskTable').DataTable();
+        var data = table.row( this ).data();
+        console.log(data);
+
+        if ( $(this).hasClass('selected') ) {
+            $(this).removeClass('selected');
+        }
+        else {
+            table.$('tr.selected').removeClass('selected');
+            $(this).addClass('selected');
+        }
+    });
+    /*
+    Delete Task Button
+    */ 
+    $('#deleteShTask').click( function () {
+      var table = $('#sharedtaskTable').DataTable();
+      var row = table.row('.selected').data();
+      if(row !== undefined){
+          //send assignment
+          $.ajax({
+          method:'DELETE',
+          url: '/api/deleteshrdtask/' + row.id,
+          data: '',
+          success:function(linkRelease){
+            $('#SharedTaskResult').hide().html("Change Effected"); //message result
+            $('#SharedTaskResult').fadeIn(50).delay(1000).fadeOut(300);
+
+            var table = $('#sharedtaskTable').DataTable(); //refresh group table
+            table.ajax.reload();
+
+          },
+            error: function(){
+              alert('error deleting shared task');
+          }
+        }); //delete user ajax
+      }else{
+        //empty user selection
+        $('#SharedTaskResult').hide().html("Select a row to delete a shared task!");
+        $('#SharedTaskResult').fadeIn(500).delay(1000).fadeOut(300);
+      }
+
+    }); //user release project button  
+
+  }); // on ready function
+
+</script>
+</html>
